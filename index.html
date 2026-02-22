@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messeng</title>
-     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="src/index.js" type="text/babel" defer></script>
+    <script src="src/App.js" type="text/babel" defer></script>
+    <!-- db -->
+    <script type="module" src="backend/firebase-config.js"></script>
+    <script type="module" src="backend/firebase-init.js"></script>
+
+    <!-- Логика -->
+    <script src="backend/auth-logic.js" type="text/babel" defer></script>
+    <script src="backend/messages-logic.js" type="text/babel" defer></script>
+    <!-- React компоненты -->
+    <script src="src/Auth.js" type="text/babel" defer></script>
+    <script src="src/Chat.js" type="text/babel" defer></script>
+    <script src="src/App.js" type="text/babel" defer></script>
 </head>
+
 <body>
     <div id="root"></div>
 </body>
+
 </html>
