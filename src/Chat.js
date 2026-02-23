@@ -33,7 +33,11 @@ const Chat = ({ user, onLogout }) => {
         <div>
             <div>
                 <h3>Чат</h3>
-                <button>Выйти</button>
+                 <button 
+                    onClick={handleLogout}
+                >
+                    Выйти
+                </button>
             </div>
 
             <div>
