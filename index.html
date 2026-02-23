@@ -5,17 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messeng</title>
-    <!-- React -->
+    <!-- React и Babel -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-    <!-- db -->
-    <script type="module" src="backend/firebase.js"></script>
 
-    <!-- Логика -->
+    <!-- Firebase 8.x (глобальная версия) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Инициализация Firebase (отдельный файл) -->
+    <script src="backend/firebase-init.js"></script>
+
+    <!-- Логика (должна быть после инициализации) -->
     <script src="backend/auth-logic.js" type="text/babel" defer></script>
     <script src="backend/messages-logic.js" type="text/babel" defer></script>
+
     <!-- React компоненты -->
     <script src="src/Auth.js" type="text/babel" defer></script>
     <script src="src/Chat.js" type="text/babel" defer></script>

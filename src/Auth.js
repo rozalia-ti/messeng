@@ -3,22 +3,20 @@ const Auth = ({ onLogin }) => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         let result;
         if (isLogin) {
-            // входим в аккаунт
             result = await AuthLogic.checkPassword(username, password);
         } else {
-            // регистрируем пользователя
             result = await AuthLogic.register(username, password);
         }
 
-        if (result.success) {
+        if (result?.success) {
             onLogin(result.user);
         } else {
-            alert(result.message)
+            alert(result?.message || 'Ошибка');
         }
     };
 
@@ -56,3 +54,5 @@ const Auth = ({ onLogin }) => {
     )
 
 }
+
+window.Auth = Auth;

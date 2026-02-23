@@ -1,7 +1,7 @@
 const App = () => {
-
     const [user, setUser] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
+
     React.useEffect(() => {
         const savedUser = localStorage.getItem('chatUser');
         if (savedUser) {
@@ -9,6 +9,7 @@ const App = () => {
         }
         setLoading(false);
     }, []);
+
     const handleLogin = (userData) => {
         setUser(userData);
         localStorage.setItem('chatUser', JSON.stringify(userData));
@@ -20,10 +21,9 @@ const App = () => {
     };
 
     if (loading) {
-        return (
-            <h3>загрузка...</h3>
-        )
+        return <h3 style={{ textAlign: 'center' }}>Загрузка...</h3>;
     }
+
     return (
         <div>
             {user ? (

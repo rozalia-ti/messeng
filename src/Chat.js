@@ -3,25 +3,15 @@ const Chat = ({ user, onLogout }) => {
     const [newMessage, setNewMessage] = React.useState('');
 
     React.useEffect(() => {
-        // эта функция будет вызываться каждый раз, когда будет появляться новое сообщение.
-        const unsubscribe = MessagesLogic.subscribeToMessages((msgs) => {
-            setMessages(msgs); // обновляем список сообщений
-        });
-
-        return () => unsubscribe
+        const unsubscribe = MessagesLogic.subscribeToMessages(setMessages);
+        return () => unsubscribe();
     }, []);
 
     const sendMessage = async (e) => {
         e.preventDefault();
         if (!newMessage.trim()) return;
-
-        await MessagesLogic.sendMessage(
-            user.uid,
-            user.username,
-            newMessage
-        );
-
-        setMessages('');
+        await MessagesLogic.sendMessage(user.uid, user.username, newMessage);
+        setNewMessage('');
     };
 
     return (
@@ -57,3 +47,6 @@ const Chat = ({ user, onLogout }) => {
         </div>
     )
 }
+
+// В конце файла Chat.js
+window.Chat = Chat;

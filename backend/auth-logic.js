@@ -1,18 +1,16 @@
-
 const AuthLogic = {
+    // Поиск пользователя по имени
     async findUserByUsername(username) {
         try {
-            const usersRef = collection(window.db, "users");
-            const q = query(usersRef, where("username", "==", username));
-            const snapshot = await getDocs(q);
-            
+            const snapshot = await db.collection('users')
+                .where('username', '==', username)
+                .get();
+
             if (snapshot.empty) {
-                console.log('Пользователь не найден');
                 return null;
             }
-            
+
             const doc = snapshot.docs[0];
-            
             return {
                 uid: doc.id,
                 ...doc.data()
@@ -23,16 +21,15 @@ const AuthLogic = {
         }
     },
 
-    // создание нового пользователя
+    // Создание нового пользователя
     async createUser(username, password) {
         try {
-            const usersRef = collection(window.db, "users");
-            const docRef = await addDoc(usersRef, {
+            const docRef = await db.collection('users').add({
                 username: username,
                 password: password,
                 createdAt: new Date().toISOString()
             });
-            
+
             return {
                 uid: docRef.id,
                 username: username
@@ -43,18 +40,18 @@ const AuthLogic = {
         }
     },
 
-    // проверка пароля
+    // Проверка пароля
     async checkPassword(username, password) {
         const user = await this.findUserByUsername(username);
-        
+
         if (!user) {
             return { success: false, message: 'Пользователь не найден' };
         }
-        
+
         if (user.password !== password) {
             return { success: false, message: 'Неверный пароль' };
         }
-        
+
         return {
             success: true,
             user: {
@@ -64,21 +61,16 @@ const AuthLogic = {
         };
     },
 
-    // регистрация
+    // Регистрация
     async register(username, password) {
-        // Проверяем, не занят ли username
         const existingUser = await this.findUserByUsername(username);
-        
+
         if (existingUser) {
             return { success: false, message: 'Имя пользователя занято' };
         }
-        
+
         const newUser = await this.createUser(username, password);
-        
-        if (!newUser) {
-            return { success: false, message: 'Ошибка при создании пользователя' };
-        }
-        
+
         return {
             success: true,
             user: newUser
@@ -87,4 +79,4 @@ const AuthLogic = {
 };
 
 window.AuthLogic = AuthLogic;
-console.log('AuthLogic загружен с новым синтаксисом');
+console.log('✅ AuthLogic загружен');

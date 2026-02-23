@@ -1,18 +1,21 @@
 const MessagesLogic = {
-    // отправка сообщения
-    async sendMessage(userId, username, info) {
-        await db.collection('messages').add({
-            info: info,
-            userId: userId,
-            username: username,
-            timestamp: new Date().toISOString()
-        });
+    // Отправка сообщения
+    async sendMessage(userId, username, text) {
+        try {
+            await db.collection('messages').add({
+                text: text,
+                userId: userId,
+                username: username,
+                timestamp: new Date().toISOString()
+            });
+            console.log('✅ Сообщение отправлено');
+        } catch (error) {
+            console.error('❌ Ошибка отправки:', error);
+        }
     },
 
-    // получение сообщений в реальном времени
+    // Подписка на сообщения в реальном времени
     subscribeToMessages(callback) {
-        // orderBy('timestamp', 'asc') - сортируем по времени (старые сверху)
-        // onSnapshot - слушаем изменения (автообновление)
         return db.collection('messages')
             .orderBy('timestamp', 'asc')
             .onSnapshot((snapshot) => {
@@ -29,3 +32,4 @@ const MessagesLogic = {
 };
 
 window.MessagesLogic = MessagesLogic;
+console.log('MessagesLogic загружен');
