@@ -4,7 +4,7 @@ const Chat = ({ user, onLogout }) => {
 
     React.useEffect(() => {
         const unsubscribe = MessagesLogic.subscribeToMessages((msgs) => {
-            console.log('Получены сообщения:', msgs); // Проверяем что приходит
+            console.log('Получены сообщения:', msgs);
             setMessages(msgs);
         });
         return () => unsubscribe();
@@ -17,7 +17,10 @@ const Chat = ({ user, onLogout }) => {
         setNewMessage('');
     };
 
-    // Функция для безопасного отображения даты
+    const handleLogout = () => {
+        onLogout();
+    };
+
     const formatDate = (timestamp) => {
         if (!timestamp) return 'только что';
         try {
@@ -33,9 +36,7 @@ const Chat = ({ user, onLogout }) => {
         <div>
             <div>
                 <h3>Чат</h3>
-                 <button 
-                    onClick={handleLogout}
-                >
+                <button onClick={handleLogout}> 
                     Выйти
                 </button>
             </div>
@@ -47,25 +48,22 @@ const Chat = ({ user, onLogout }) => {
                             {msg.username} • {formatDate(msg.timestamp)}
                         </div>
                         <div>
-                            {msg.info ||msg.text}
+                            {msg.info || msg.text}
                         </div>
                     </div>
                 ))}
             </div>
             <form onSubmit={sendMessage}>
                 <input
-                // ПОМЕНЯТЬ ПРИНИМАЕМЫЙ ТИП СООБЩЕНИЙ НА ANY
-                type="text"
-                value = {newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Введите сообщение..."
-
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Введите сообщение..."
                 />
                 <button type="submit">Отправить</button>
             </form>
         </div>
-    )
-}
+    );
+};
 
-// В конце файла Chat.js
 window.Chat = Chat;
