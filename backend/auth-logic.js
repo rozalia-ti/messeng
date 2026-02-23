@@ -1,4 +1,3 @@
-import { collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 const AuthLogic = {
     async findUserByUsername(username) {
