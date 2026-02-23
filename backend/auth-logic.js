@@ -1,7 +1,7 @@
 const AuthLogic = {
     // поиск пользователя в collections по тому, что мы ввели в полях при решистрации
     async findUserByUsername(username) {
-        const snapshot = await db.collection('users')
+        const snapshot = await window.db.collection('users')
             .where('username', '==', username)
             .get()
 
@@ -15,7 +15,7 @@ const AuthLogic = {
 
     // создание нового пользователя
     async createUser(username, password) {
-        const docRef = await db.collection('users').add({
+        const docRef = await window.db.collection('users').add({
             username: username,
             password: password
         });
