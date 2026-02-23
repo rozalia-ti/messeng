@@ -28,7 +28,7 @@ const Chat = ({ user, onLogout }) => {
                             {msg.username} * {new Date(msg.timestamp).toLocaleTimeString()}
                         </div>
                         <div>
-                            {msg.info}
+                            {msg.text}
                         </div>
                     </div>
                 ))}
