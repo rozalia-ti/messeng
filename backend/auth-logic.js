@@ -1,57 +1,85 @@
+import { collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
 const AuthLogic = {
-    // поиск пользователя в collections по тому, что мы ввели в полях при решистрации
     async findUserByUsername(username) {
-        const snapshot = await window.db.collection('users')
-            .where('username', '==', username)
-            .get()
-
-        const doc = snapshot.docs[0];
-
-        return {
-            uid: doc.id,
-            ...doc.data()
-        };
+        try {
+            const usersRef = collection(window.db, "users");
+            const q = query(usersRef, where("username", "==", username));
+            const snapshot = await getDocs(q);
+            
+            if (snapshot.empty) {
+                console.log('Пользователь не найден');
+                return null;
+            }
+            
+            const doc = snapshot.docs[0];
+            
+            return {
+                uid: doc.id,
+                ...doc.data()
+            };
+        } catch (error) {
+            console.error('Ошибка при поиске:', error);
+            return null;
+        }
     },
 
     // создание нового пользователя
     async createUser(username, password) {
-        const docRef = await window.db.collection('users').add({
-            username: username,
-            password: password
-        });
-
-        return {
-            uid: docRef.id,
-            username: username
-        };
+        try {
+            const usersRef = collection(window.db, "users");
+            const docRef = await addDoc(usersRef, {
+                username: username,
+                password: password,
+                createdAt: new Date().toISOString()
+            });
+            
+            return {
+                uid: docRef.id,
+                username: username
+            };
+        } catch (error) {
+            console.error('Ошибка при создании:', error);
+            return null;
+        }
     },
 
-    // проверяем пароль 
+    // проверка пароля
     async checkPassword(username, password) {
-        const user = await this.findUserByUsername(username)
-
-        if (user.password != password) {
-            return { success: false, message: 'Неверный парооль' };
+        const user = await this.findUserByUsername(username);
+        
+        if (!user) {
+            return { success: false, message: 'Пользователь не найден' };
         }
-
+        
+        if (user.password !== password) {
+            return { success: false, message: 'Неверный пароль' };
+        }
+        
         return {
-            success: true, 
+            success: true,
             user: {
                 uid: user.uid,
                 username: user.username
             }
-        }
+        };
     },
+
     // регистрация
     async register(username, password) {
-        const existUser = await this.findUserByUsername(username);
-        // проверяем при регистрации, вдруг юзернейм уже занят.
-        if(existUser) {
-            return {success: false, message: 'Имя пользователя занято'};
+        // Проверяем, не занят ли username
+        const existingUser = await this.findUserByUsername(username);
+        
+        if (existingUser) {
+            return { success: false, message: 'Имя пользователя занято' };
         }
-
+        
         const newUser = await this.createUser(username, password);
-
+        
+        if (!newUser) {
+            return { success: false, message: 'Ошибка при создании пользователя' };
+        }
+        
         return {
             success: true,
             user: newUser
@@ -60,3 +88,4 @@ const AuthLogic = {
 };
 
 window.AuthLogic = AuthLogic;
+console.log('AuthLogic загружен с новым синтаксисом');
