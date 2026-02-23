@@ -3,7 +3,10 @@ const Chat = ({ user, onLogout }) => {
     const [newMessage, setNewMessage] = React.useState('');
 
     React.useEffect(() => {
-        const unsubscribe = MessagesLogic.subscribeToMessages(setMessages);
+        const unsubscribe = MessagesLogic.subscribeToMessages((msgs) => {
+            console.log('Получены сообщения:', msgs); // Проверяем что приходит
+            setMessages(msgs);
+        });
         return () => unsubscribe();
     }, []);
 
@@ -12,6 +15,18 @@ const Chat = ({ user, onLogout }) => {
         if (!newMessage.trim()) return;
         await MessagesLogic.sendMessage(user.uid, user.username, newMessage);
         setNewMessage('');
+    };
+
+    // Функция для безопасного отображения даты
+    const formatDate = (timestamp) => {
+        if (!timestamp) return 'только что';
+        try {
+            const date = new Date(timestamp);
+            if (isNaN(date.getTime())) return 'только что';
+            return date.toLocaleTimeString();
+        } catch {
+            return 'только что';
+        }
     };
 
     return (
@@ -25,10 +40,10 @@ const Chat = ({ user, onLogout }) => {
                 {messages.map(msg => (
                     <div key={msg.id}>
                         <div>
-                            {msg.username} * {new Date(msg.timestamp).toLocaleTimeString()}
+                            {msg.username} • {formatDate(msg.timestamp)}
                         </div>
                         <div>
-                            {msg.text}
+                            {msg.info ||msg.text}
                         </div>
                     </div>
                 ))}
