@@ -1,22 +1,34 @@
 const MessagesLogic = {
     // Отправка сообщения
     async sendMessage(userId, username, text) {
-        try {
-            await db.collection('messages').add({
-                text: text,
+         try {
+            // Создаем документ сообщения
+            const messageData = {
+                chatId: chatId,
                 userId: userId,
                 username: username,
+                text: text,
                 timestamp: new Date().toISOString()
+            };
+        
+            await db.collection('messages').add(messageData);
+            // Обновляем информацию о последнем сообщении в чате
+            await db.collection('chats').doc(chatId).update({
+                lastMessage: text,
+                lastMessageTime: messageData.timestamp,
+                lastMessageSender: username
             });
-            console.log('✅ Сообщение отправлено');
+            return {success: true};
         } catch (error) {
-            console.error('❌ Ошибка отправки:', error);
+            console.error('Ошибка отправки:', error);
+            return {success: false, error: error.message};
         }
     },
 
     // Подписка на сообщения в реальном времени
     subscribeToMessages(callback) {
         return db.collection('messages')
+            .where('chatId', '==', chatId)
             .orderBy('timestamp', 'asc')
             .onSnapshot((snapshot) => {
                 const messages = [];

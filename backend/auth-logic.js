@@ -20,7 +20,6 @@ const AuthLogic = {
             return null;
         }
     },
-
     // Создание нового пользователя
     async createUser(username, password) {
         try {
@@ -29,7 +28,6 @@ const AuthLogic = {
                 password: password,
                 createdAt: new Date().toISOString()
             });
-
             return {
                 uid: docRef.id,
                 username: username
@@ -39,7 +37,6 @@ const AuthLogic = {
             return null;
         }
     },
-
     // Проверка пароля
     async checkPassword(username, password) {
         const user = await this.findUserByUsername(username);
@@ -47,11 +44,9 @@ const AuthLogic = {
         if (!user) {
             return { success: false, message: 'Пользователь не найден' };
         }
-
         if (user.password !== password) {
             return { success: false, message: 'Неверный пароль' };
         }
-
         return {
             success: true,
             user: {
@@ -60,7 +55,6 @@ const AuthLogic = {
             }
         };
     },
-
     // Регистрация
     async register(username, password) {
         const existingUser = await this.findUserByUsername(username);
@@ -68,15 +62,11 @@ const AuthLogic = {
         if (existingUser) {
             return { success: false, message: 'Имя пользователя занято' };
         }
-
         const newUser = await this.createUser(username, password);
-
         return {
             success: true,
             user: newUser
         };
     }
 };
-
 window.AuthLogic = AuthLogic;
-console.log('✅ AuthLogic загружен');

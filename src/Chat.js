@@ -1,25 +1,23 @@
-const Chat = ({ user, onLogout }) => {
+const Chat = ({ user, chat, onLogout }) => {
     const [messages, setMessages] = React.useState([]);
     const [newMessage, setNewMessage] = React.useState('');
 
     React.useEffect(() => {
-        const unsubscribe = MessagesLogic.subscribeToMessages((msgs) => {
-            console.log('Получены сообщения:', msgs);
+        if (!chat) return;
+        const unsubscribe = MessagesLogic.subscribeToMessages(chat.id, (msgs) => {
             setMessages(msgs);
         });
         return () => unsubscribe();
-    }, []);
+    }, [chat]);
 
     const sendMessage = async (e) => {
         e.preventDefault();
-        if (!newMessage.trim()) return;
-        await MessagesLogic.sendMessage(user.uid, user.username, newMessage);
+        if (!newMessage.trim() || !chat) return;
+        await MessagesLogic.sendMessage(
+            chat.id, user.uid, user.username, newMessage);
         setNewMessage('');
     };
 
-    const handleLogout = () => {
-        onLogout();
-    };
 
     const formatDate = (timestamp) => {
         if (!timestamp) return 'только что';
@@ -31,12 +29,33 @@ const Chat = ({ user, onLogout }) => {
             return 'только что';
         }
     };
+    // если чат не выбран
+    if (!chat) {
+        return (
+            <div>
+                <div>
+                    <h3>Чат</h3>
+                    <button onClick={onLogout}>
+                        Выйти
+                    </button>
+                </div>
+                <div>
+                    <p>Выберите чат</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div>
             <div>
-                <h3>Чат</h3>
-                <button onClick={handleLogout}> 
+                <h3>
+                    {chat.isGroup
+                        ? (chat.name || 'Групповой чат')
+                        : chat.otherUserName
+                    }
+                </h3>
+                <button onClick={onLogout}>
                     Выйти
                 </button>
             </div>
@@ -60,7 +79,9 @@ const Chat = ({ user, onLogout }) => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Введите сообщение..."
                 />
-                <button type="submit">Отправить</button>
+                <button type="submit" disabled={!newMessage.trim()}>
+                    Отправить
+                </button>
             </form>
         </div>
     );
