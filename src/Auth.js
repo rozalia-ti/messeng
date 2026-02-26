@@ -23,7 +23,7 @@ const Auth = ({ onLogin }) => {
 
     return (
         <div>
-            <h1>Регистрация</h1>
+            <h1>{isLogin ? 'Вход' : 'Регистрация'}</h1>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"

@@ -197,6 +197,17 @@ const ChatLogic = {
             console.error('Ошибка при поиске пользователей:', error);
             return [];
         }
+    },
+    async updateChatLastMeessage(chatId, message) {
+        try {
+            await db.collection('chats').doc('chaiId').update({
+                lastMessage: message.text,
+                lastMessageTime: message.timestamp,
+                lastMessageSender: message.username
+            });
+        } catch(error) {
+            console.error('Ошибка при обновлении последнего сообщения', error)
+        }
     }
 };
 

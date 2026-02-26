@@ -13,11 +13,7 @@ const MessagesLogic = {
         
             await db.collection('messages').add(messageData);
             // Обновляем информацию о последнем сообщении в чате
-            await db.collection('chats').doc(chatId).update({
-                lastMessage: text,
-                lastMessageTime: messageData.timestamp,
-                lastMessageSender: username
-            });
+            await ChatLogic.updateChatLastMeessage(chatId, messageData);
             return {success: true};
         } catch (error) {
             console.error('Ошибка отправки:', error);
@@ -26,7 +22,7 @@ const MessagesLogic = {
     },
 
     // Подписка на сообщения в реальном времени
-    subscribeToMessages(callback) {
+    subscribeToMessages(chatId, callback) {
         return db.collection('messages')
             .where('chatId', '==', chatId)
             .orderBy('timestamp', 'asc')

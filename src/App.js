@@ -44,6 +44,7 @@ const App = () => {
             <Chat 
                 user = {user}
                 chat = {selectedChat}
+                onLogout = {handleLogout}
             />
         </div>
     );

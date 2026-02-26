@@ -1,4 +1,27 @@
 const AuthLogic = {
+
+    async fundUserByUsername(username) {
+        try {
+            const snapshot = await db.collection('users')
+            .where('username', "==", username)
+            .get();
+
+        if (snapshot.empty) {
+            return null;
+
+        }
+
+        const doc = snapshot.docs[0]
+        return {
+            uid: doc.id,
+            ...doc.data()
+        };
+        } catch(error) {
+            console.error('Ошибка при поиске:', error);
+            return null;
+        }
+    },
+    
     // Поиск пользователя по имени
     async findUserByUsername(username) {
         try {
